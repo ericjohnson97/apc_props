@@ -264,7 +264,7 @@ def extract_geometry_info(geometry_file: str) -> dict:
     
     return geometry_info
 
-def process_propeller_file(propeller_file: str):
+def process_propeller_file(propeller_file: str, output_folder: str):
     """
     Processes a single propeller data file to generate the JSB propeller XML.
     
@@ -275,17 +275,17 @@ def process_propeller_file(propeller_file: str):
     prop_name = base_name.split('.dat')[0].replace('PER3_', '')
 
     # Create output folder if it doesn't exist
-    if not os.path.exists('jsb_propellers'):
-        os.makedirs('jsb_propellers')
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
 
-    output_filename = f"jsb_propellers/{prop_name}.xml"
+    output_filename = f"{output_folder}/{prop_name}.xml"
 
     df = parse_data(propeller_file)
     averaged_df = interpolate_and_average(df)
     
 
-    plot_all_ct_vs_j(df, averaged_df, f"All Ct vs. J for {prop_name}", f"jsb_propellers/{prop_name}_all_ct.png")
-    plot_all_cp_vs_j(df, averaged_df, f"All Cp vs. J for {prop_name}", f"jsb_propellers/{prop_name}_all_cp.png")
+    plot_all_ct_vs_j(df, averaged_df, f"All Ct vs. J for {prop_name}", f"{output_folder}/{prop_name}_all_ct.png")
+    plot_all_cp_vs_j(df, averaged_df, f"All Cp vs. J for {prop_name}", f"{output_folder}/{prop_name}_all_cp.png")
     
     geometry_file = f"geometry/{prop_name}-PERF.PE0"
     geometry_info = extract_geometry_info(geometry_file)
@@ -295,6 +295,7 @@ def process_propeller_file(propeller_file: str):
 def main():
     parser = argparse.ArgumentParser(description="Plot averaged Ct vs. J and generate JSB propeller XML model.")
     parser.add_argument('propeller_path', type=str, help='The path to the propeller data file or directory containing multiple propeller data files.')
+    parser.add_argument('--output_folder', type=str, default='jsb_apc_propeller_models', help='The folder where the output files will be saved.')
     args = parser.parse_args()
 
     # Check if the provided path is a directory or a file
@@ -303,10 +304,10 @@ def main():
         for filename in os.listdir(args.propeller_path):
             if filename.endswith('.dat'):
                 propeller_file = os.path.join(args.propeller_path, filename)
-                process_propeller_file(propeller_file)
+                process_propeller_file(propeller_file, args.output_folder)
     else:
         # Process a single file
-        process_propeller_file(args.propeller_path)
+        process_propeller_file(args.propeller_path, args.output_folder)
 
 if __name__ == "__main__":
     main()
