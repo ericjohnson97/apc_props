@@ -26,16 +26,17 @@ pip install -r requirements.txt
 
 ```bash
 python3 read_apc_data.py --help
-usage: read_apc_data.py [-h] propeller_path
+usage: read_apc_data.py [-h] [--output_folder OUTPUT_FOLDER] propeller_path
 
 Plot averaged Ct vs. J and generate JSB propeller XML model.
 
 positional arguments:
-  propeller_path  The path to the propeller data file or directory
-                  containing multiple propeller data files.
+  propeller_path        The path to the propeller data file or directory containing multiple propeller data files.
 
 options:
-  -h, --help      show this help message and exit
+  -h, --help            show this help message and exit
+  --output_folder OUTPUT_FOLDER
+                        The folder where the output files will be saved.
 ```
 
 run on a single propeller data file:
